@@ -10,11 +10,14 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Push
     steps:
-      - name: git-checkout
+      - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Install all dependencies
         run: npm install
+
+      - name: Ensure Vite is executable
+        run: chmod +x node_modules/.bin/vite
 
       - name: Build
         run: npm run build # The build command of your project
