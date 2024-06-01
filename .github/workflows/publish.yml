@@ -32,6 +32,9 @@ jobs:
       - name: Build
         run: npm run build # The build command of your project
 
+      - name: List build directory contents
+        run: ls -la
+
       - name: Push to build branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
