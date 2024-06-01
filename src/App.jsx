@@ -1,87 +1,86 @@
-import React, { useEffect, useState } from 'react';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
-import Intro from './components/Intro';
-import Portfolio from './components/Portfolio';
-import Timeline from './components/Timeline';
+import React, { useState, useEffect } from 'react';
+import Heatmap from './components/Heatmap.jsx';
+import Footer from './components/Footer.jsx';
+import './styles/App.css';
+import Papa from 'papaparse';
 
 function App() {
-	const [theme, setTheme] = useState(null);
+  const [selectedDate, setSelectedDate] = useState('');
+  const [dates, setDates] = useState([]);
+  const [selectedMaturity, setSelectedMaturity] = useState('Daily'); // State for selected maturity
 
-	useEffect(() => {
-		if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-			setTheme('dark');
-		} else {
-			setTheme('light');
-		}
-	}, []);
+  useEffect(() => {
+    // Fetch and parse dates from the CSV file
+    fetch('date_only.csv')
+      .then(response => response.text())
+      .then(csvText => {
+        Papa.parse(csvText, {
+          header: true,
+          complete: function(results) {
+            const parsedDates = results.data
+              .map(row => row.Date.trim())
+              .filter(date => date); // Filter out any empty dates
+            console.log('Parsed Dates:', parsedDates); // Log parsed dates for debugging
+            setDates(parsedDates);
+            if (parsedDates.length > 0) {
+              setSelectedDate(parsedDates[0]); // Select the first date by default
+            }
+          },
+          error: function(error) {
+            console.error('Error parsing CSV:', error);
+          }
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching dates:', error);
+      });
+  }, []);
 
-	const handleThemeSwitch = () => {
-		setTheme(theme === 'dark' ? 'light' : 'dark');
-	};
-
-	useEffect(() => {
-		if (theme === 'dark') {
-			document.documentElement.classList.add('dark');
-		} else {
-			document.documentElement.classList.remove('dark');
-		}
-	}, [theme]);
-
-	const sun = (
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			fill="none"
-			viewBox="0 0 24 24"
-			strokeWidth={1.5}
-			stroke="currentColor"
-			className="w-6 h-6"
-		>
-			<path
-				strokeLinecap="round"
-				strokeLinejoin="round"
-				d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
-			/>
-		</svg>
-	);
-
-	const moon = (
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			fill="none"
-			viewBox="0 0 24 24"
-			strokeWidth={1.5}
-			stroke="white"
-			className="w-6 h-6"
-		>
-			<path
-				strokeLinecap="round"
-				strokeLinejoin="round"
-				d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"
-			/>
-		</svg>
-	);
+  const handleMaturityClick = (maturity) => {
+    setSelectedMaturity(maturity);
+  };
 
   return (
-	<>
-		<button
-			type="button"
-			onClick={handleThemeSwitch}
-			className="fixed p-2 z-10 right-20 top-4 bg-violet-300 dark:bg-orange-300 text-lg p-1 rounded-md"
-		>
-			{theme === 'dark' ? sun : moon}
-		</button>
-		<div className="bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-300 min-h-screen font-inter">
-			<div className="max-w-5xl w-11/12 mx-auto">
-				<Intro />
-				<Portfolio />
-				<Timeline />
-				<Contact />
-				<Footer />
-			</div>
-		</div>
-	 </>
-  )
+    <div className="App">
+      <div className="header">
+        <h1>Select the maturity</h1>
+        <div className="button-container">
+          <button 
+            className={`square-button ${selectedMaturity === 'Daily' ? 'selected' : ''}`} 
+            onClick={() => handleMaturityClick('Daily')}
+          >
+            Daily
+          </button>
+          <button 
+            className={`square-button ${selectedMaturity === 'Monthly' ? 'selected' : ''}`} 
+            onClick={() => handleMaturityClick('Monthly')}
+          >
+            Monthly
+          </button>
+          <button 
+            className={`square-button ${selectedMaturity === 'Annual' ? 'selected' : ''}`} 
+            onClick={() => handleMaturityClick('Annual')}
+          >
+            Annual
+          </button>
+        </div>
+        <h1>Select date</h1>
+        <select 
+          value={selectedDate} 
+          onChange={(e) => setSelectedDate(e.target.value)}
+          className="date-picker"
+        >
+          {dates.map((date, index) => (
+            <option key={index} value={date}>{date}</option>
+          ))}
+        </select>
+      </div>
+      <div className="heatmap-container">
+        <Heatmap selectedDate={selectedDate} selectedMaturity={selectedMaturity} />
+        <Footer />
+      </div>
+    </div>
+  );
 }
 
-export default App
+export default App;

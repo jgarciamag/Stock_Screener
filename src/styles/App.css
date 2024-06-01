@@ -1,0 +1,101 @@
+body, html, #root, .App {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.App {
+  text-align: center;
+  background-color: black;
+  color: white;
+  flex: 1; /* Ensures the App container takes up all available space */
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  flex: 0 1 auto; /* Allows the header to take as much space as needed */
+  padding: 5px; /* Reduced padding */
+  margin-bottom: 5px; /* Reduced margin to minimize space */
+}
+
+.heatmap-container {
+  flex: 1 1 auto; /* Allows the heatmap to take up the remaining space */
+  overflow: hidden;
+}
+
+svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* Ensure the SVG scales properly */
+  viewBox: "0 0 100 100";
+  preserveAspectRatio: "xMidYMid meet";
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin: 5px 0; /* Reduced margin */
+}
+
+.square-button {
+  margin: 0 3px; /* Reduced margin */
+  padding: 3px; /* Reduced padding */
+  font-size: 10px; /* Smaller font size */
+  cursor: pointer;
+  border: 2px solid white;
+  background-color: black;
+  color: white;
+  width: 60px; /* Reduced width */
+  height: 25px; /* Reduced height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.square-button:hover {
+  color: black;
+  background-color: white;
+  transform: scale(1.05);
+}
+
+h1 {
+  margin-top: 5px; /* Reduced margin */
+  font-size: 14px; /* Smaller font size */
+}
+
+/* Footer styles */
+.footer {
+  flex: 0 0 40px; /* Make the footer smaller */
+  background-color: black;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  font-size: 12px; /* Smaller font size */
+}
+
+.date-picker {
+  margin-left: 5px; /* Reduced margin */
+  padding: 1px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  color: black; /* Set the text color to black */
+  background-color: white; /* Set the background color to white */
+  font-size: 12px; /* Smaller font size */
+}
+
+.square-button.selected {
+  background-color: white; /* White background for selected state */
+  color: black; /* Black text color */
+  border: 2px solid black; /* Inner black border */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 0 0 1px white, 0 0 0 6px black; /* Double rounded effect with outer white and black */
+}
